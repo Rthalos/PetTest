@@ -10,20 +10,72 @@ public class PetScrip : MonoBehaviour
     [SerializeField]
     private int _hapines; //que tanta felicidad tiene la pet (0 a 100)
 
-
+    private int _clickCount;
     private bool servertime;
         
     // Start is called before the first frame update
     void Start() 
     {
-        PlayerPrefs.SetString("then", "25/08/2022 11:20:12"); //inicializa el tiempo para el juego (de manera forzada borrar al terminar)
+        PlayerPrefs.SetString("then", "26/08/2022 15:20:12"); //inicializa el tiempo para el juego (de manera forzada borrar al terminar)
         updatestatus(); //metodo controlador de los valores numericos de la pet pj
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        //if (Input.GetMouseButtonUp(0))
+        //{
+        //    Debug.Log("Clicked");
+
+        //    Vector2 v = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+        //    RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(v),Vector2.zero);
+        //    Debug.DrawLine(Camera.main.transform.position, v,Color.red,100f, false);
+        //    if (hit) {
+        //        Debug.Log(hit.transform.gameObject.name);
+        //    }
+        //    //if (hit.transform.gameObject.tag == "Pets")
+        //    //{
+        //    //    _clickCount++;
+        //    //    if (_clickCount >= 3)
+        //    //    {
+        //    //        _clickCount = 0;
+        //    //        updatehapines(1);
+        //    //    }
+        //    //}
+        //}
+        if (Input.GetMouseButtonUp(0))
+        {
+            Debug.Log("Clicked");  // TEST
+
+            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 mousePos2D = new Vector2(mousePos.x, mousePos.y);
+            Debug.DrawRay(mousePos2D, Vector2.zero, Color.red, 100f, false); //TEST
+            RaycastHit2D hit = Physics2D.Raycast(mousePos2D, Vector2.zero);
+                
+            if (hit.collider != null)
+            {
+                Debug.Log(hit.collider.gameObject.name);  // TEST
+                hit.collider.attachedRigidbody.AddForce(Vector2.up);
+            }
+
+            Debug.Log(Camera.main.ScreenToWorldPoint(Input.mousePosition));  // TEST
+
+            if (hit)
+            {
+                Debug.Log($"Hit: " +  hit.transform.gameObject.name);  // TEST
+                Debug.Log($"Hit obj: " +  hit.transform.gameObject.tag);  // TEST
+                if (hit.transform.gameObject.tag == "Pets")
+                {
+                    _clickCount++;
+                    Debug.Log($"Click Count: " + _clickCount);  // TEST
+                    if (_clickCount >= 3)
+                    {
+                        _clickCount = 0;
+                        updatehapines(1);
+                    }
+                }
+            }
+        }
     }
     void updatestatus() 
     {
@@ -99,5 +151,12 @@ public class PetScrip : MonoBehaviour
     {
         get { return _hapines; }
         set { _hapines = value; }
+    }
+    public void updatehapines(int i) {
+        _hapines += i;
+        if (_hapines > 100)
+        {
+            _hapines = 100;
+        }
     }
 }

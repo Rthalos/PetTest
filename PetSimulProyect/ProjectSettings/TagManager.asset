@@ -3,7 +3,11 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Pets
+  - Ground
+  - UI
+  - background
   layers:
   - Default
   - TransparentFX
@@ -46,4 +50,7 @@ TagManager:
     locked: 0
   - name: ForeGround
     uniqueID: 283681757
+    locked: 0
+  - name: UI
+    uniqueID: 149783061
     locked: 0
