@@ -16,7 +16,7 @@ public class MenuManager : MonoBehaviour
     void Update()
     {
         if (Input.GetMouseButtonUp(0))
-            SceneManager.LoadScene("Simul");
+            SceneManager.LoadScene("Simul2");
     }
     void flashonthetext()
     {
