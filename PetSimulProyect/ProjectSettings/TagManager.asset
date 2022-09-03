@@ -8,6 +8,7 @@ TagManager:
   - Ground
   - UI
   - background
+  - food
   layers:
   - Default
   - TransparentFX
@@ -20,8 +21,8 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
+  - Ground
+  - Pets
   - 
   - 
   - 
@@ -47,6 +48,9 @@ TagManager:
     locked: 0
   - name: BackGround
     uniqueID: 1789897331
+    locked: 0
+  - name: Ground
+    uniqueID: 2098917793
     locked: 0
   - name: ForeGround
     uniqueID: 283681757
