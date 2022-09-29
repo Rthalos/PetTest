@@ -12,6 +12,8 @@ public class PetScrip : MonoBehaviour
     private int _hapines; //que tanta felicidad tiene la pet (0 a 100)
     [SerializeField]
     private string _name;
+    public GameObject shitPrefab;
+    private GameObject shitEnEscena;
 
     private int direction; //la direccion inicia en 0 y se usa para indicar el movimineto de la pet en la pantalla (0=derecha, 1=izquierda)
     private int _clickCount;
@@ -20,7 +22,7 @@ public class PetScrip : MonoBehaviour
     private Transform target;
 
     public float speed = 200f;
-    public float nextWaypointDistance = 3f;
+    public float nextWaypointDistance;
 
     Path path;
     int currentwaypoint = 0;
@@ -29,8 +31,6 @@ public class PetScrip : MonoBehaviour
     Seeker seeker;
     Rigidbody2D rb;
 
-    public GameObject food;
-
 
     // Start is called before the first frame update
     void Start()
@@ -38,8 +38,8 @@ public class PetScrip : MonoBehaviour
         //Debug.Log(PlayerPrefs.GetString("date")+ "esta es la hora guardada");       //test
         //Debug.Log(PlayerPrefs.GetInt("_hunger")+"esta es la comida guardada");      //test
         //Debug.Log(PlayerPrefs.GetInt("_hapines")+"esta es la felicidad guardada");  //test
-        InvokeRepeating("updatepath", 0f, .5f);
-        direction = 0;
+        InvokeRepeating("updatepath", 0f, 0.1f);
+        direction = 1;
         //PlayerPrefs.SetString("date", "01/09/2022 15:20:12"); //inicializa el tiempo para el juego (de manera forzada borrar al terminar)
         if (!PlayerPrefs.HasKey("name") || PlayerPrefs.GetString("name")==null)
         {
@@ -54,20 +54,27 @@ public class PetScrip : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate(){   
         getclicked();
-        movement();}
+        movement();
+        //Debug.Log("el current waypoint es: " + currentwaypoint);
+        //if (path != null)
+        //Debug.Log("el path vector waypoint es: " + path.vectorPath.Count);
+
+    }
 
     void updatepath () 
     {
-        if (GameObject.Find("cherry(Clone)")) {
+        GameObject cherry = GameObject.Find("cherry(Clone)");
+        if (cherry!=null)
+        {
+            target = cherry.transform;
             seeker = GetComponent<Seeker>();
             rb = GetComponent<Rigidbody2D>();
-            target = GameObject.Find("cherry(Clone)").GetComponent<Transform>();
-            if (seeker.IsDone()) { 
+            if (seeker.IsDone())
+            {
                 seeker.StartPath(rb.position, target.position, OnPathComplete);
                 direction = 2;
             }
-        }
-        
+        }      
     }
     void OnPathComplete(Path p)
     {
@@ -76,6 +83,7 @@ public class PetScrip : MonoBehaviour
             path = p;
             currentwaypoint = 0;
         }
+
     }
     void updatestatus()
     {
@@ -102,22 +110,25 @@ public class PetScrip : MonoBehaviour
             //Debug.Log("Felicidad existe?:" + PlayerPrefs.HasKey("hapines") + "-----el valor es:" +_hapines);
         }
 
-        if (!PlayerPrefs.HasKey("date"))                    // obtiene el valor del tiempo del savelog del juego
-            PlayerPrefs.SetString("date", getstringtime());
+        if (!PlayerPrefs.HasKey("DateOfBirth")) {                     //obtiene el valor del tiempo del savelog del juego
+            PlayerPrefs.SetString("DateOfBirth", getstringtime());    //Fechaa en la que se creo la pet
+            PlayerPrefs.SetString("DateOfFeed", getstringtime());     //fecha en la que se alimento la pet
+            PlayerPrefs.SetString("PlayingDate", getstringtime());    //fecha en la que se jugo con la pet
+        }
 
-        TimeSpan ts = getTimeSpan();
+        TimeSpan df = getTimeSpan(PlayerPrefs.GetString("DateOfFeed"));
 
-        if (ts.TotalHours >= 1) { 
-        _hunger = _hunger - (int)(ts.TotalHours * 4);
+        if (df.TotalHours >= 1) { 
+        _hunger = _hunger - (int)(df.TotalHours * 4);
         }
         if (_hunger <= 0)
         {
             _hunger = 0;
         }
-
-        if (ts.TotalHours >= 1)
+        TimeSpan py = getTimeSpan(PlayerPrefs.GetString("PlayingDate"));
+        if (py.TotalHours >= 1)
         {
-            _hapines =_hapines - ((int)((100 - _hunger) * (ts.TotalHours / 2)));
+            _hapines =_hapines - ((int)((100 - _hunger) * (py.TotalHours / 2)));
         }
         if (_hapines <= 0)
             {
@@ -130,16 +141,15 @@ public class PetScrip : MonoBehaviour
         //Debug.Log(getTimeSpan().TotalHours+"Estas son las horas"); //debug para probar el tiempo
         //Debug.Log((int)ts.TotalHours+"Estas son las horas en int");
         //Debug.Log((int)ts.TotalHours*4 +"Estas son las horas *4");
-        //Debug.LogError((_hunger - (int)ts.TotalHours * 4) + "Estas son restadas al alimento");
-        
+        //Debug.LogError((_hunger - (int)ts.TotalHours * 4) + "Estas son restadas al alimento");  
         //if (servertime)
         //{
         //    updateServer();
         //}
         //else
         //{
-            updateDevice();   // guarda el valor del tiempo en el savelog del juego (hora de equipo)
-        //}
+        //    updateDevice();   // guarda el valor del tiempo en el savelog del juego (hora de equipo)
+        ////}
     }
     void updateServer() // guarda el valor del tiempo en el savelog del juego (hora de un server)
     {
@@ -149,18 +159,17 @@ public class PetScrip : MonoBehaviour
     {
         //Debug.Log(getstringtime()+ "Save pet (o por lo menos la hora) y la hora es:");
        // Debug.Log(getTimeSpan()+"");
-        PlayerPrefs.SetString("date", getstringtime());
         PlayerPrefs.SetInt("hapines", _hapines);
         PlayerPrefs.SetInt("hunger", _hunger);  
         //Debug.Log(PlayerPrefs.GetInt("hunger", _hunger)+"= Hunger");
         //Debug.Log(PlayerPrefs.GetInt("hapines", _hapines) + "= Hapines");
         //Debug.LogError("luego del guardado");
     }
-    TimeSpan getTimeSpan()  // obtiene el tiempo transcurrido desde la hora guardada en el savelog (date) y el valor actual now del metodo getstringtime
+    TimeSpan getTimeSpan(string fecha)  // obtiene el tiempo transcurrido desde la hora guardada en el savelog (date) y el valor actual now del metodo getstringtime
     { if (servertime)
             return new TimeSpan();
         else
-            return DateTime.Now - Convert.ToDateTime(PlayerPrefs.GetString("date"));
+            return DateTime.Now - Convert.ToDateTime(fecha);
     }
     string getstringtime() // obtiene el valor del tiempo del juego
     {
@@ -189,6 +198,7 @@ public class PetScrip : MonoBehaviour
             _hapines = 100;
         }
         PlayerPrefs.SetInt("hapines", _hapines);
+        PlayerPrefs.SetString("PlayingDate", getstringtime());
     } //aumenta los valores de felicidad
     public void updatehunger(int i)
     {
@@ -198,6 +208,7 @@ public class PetScrip : MonoBehaviour
             _hunger = 100;
         }
         PlayerPrefs.SetInt("hunger", _hunger);
+        PlayerPrefs.SetString("DateOfFeed", getstringtime());
     }   // aumenta los valores de comida
     public void getclicked()//detecta la ubicaion en la pantalla de la pet y aumenta la felicidad con min 3 clicks, usa "updatehapines"
     {
@@ -241,24 +252,20 @@ public class PetScrip : MonoBehaviour
     {
         if (collision.gameObject.name == "Right")
         {
-            direction = 1;
+            direction = -1;
             //Debug.Log("Collision con el limite:" + collision.gameObject.name);
         }
         if (collision.gameObject.name == "Left")
         {
-            direction = 0;
+            direction = 1;
             //Debug.Log("Collision con el limite:" + collision.gameObject.name);
         }
-        if (collision.gameObject.name == "cherry(Clone)")
+        if (collision.gameObject.tag == "Shit")
         {
-            var objets = GameObject.FindGameObjectsWithTag("food");
-            foreach (GameObject o in objets) {
-                Destroy(o);
-                updatehunger(25);
-                path = null;
-                seeker = null;
-                distanceWall();
-            }
+            if (direction == 1)
+                direction = -1;
+            else
+                direction = 1;
         }
     }
 
@@ -267,7 +274,7 @@ public class PetScrip : MonoBehaviour
         float _distance1 = Vector2.Distance((Vector2)this.transform.position, (Vector2)(GameObject.Find("Right").GetComponent<Transform>().transform.position));
         float _distance2 = Vector2.Distance((Vector2)this.transform.position, (Vector2)(GameObject.Find("Left").GetComponent<Transform>().transform.position));
         if (_distance1 > _distance2)
-            direction = 0;
+            direction = -1;
         else direction = 1;
 
     }
@@ -275,15 +282,14 @@ public class PetScrip : MonoBehaviour
     {
         if (path == null)
         {
-            if (direction == 0)
-            {
-                transform.Translate(Vector3.right * Time.deltaTime);
-                GetComponent<SpriteRenderer>().flipX = false;
-            }
+            gameObject.transform.Translate(Vector3.right *direction* Time.deltaTime);
             if (direction == 1)
+            { 
+               gameObject.GetComponent<SpriteRenderer>().flipX = false;
+            }
+            if (direction ==-1)
             {
-                transform.Translate(Vector3.left * Time.deltaTime);
-                GetComponent<SpriteRenderer>().flipX = true;
+                gameObject.GetComponent<SpriteRenderer>().flipX = true;
             }
             return;
         }
@@ -299,16 +305,35 @@ public class PetScrip : MonoBehaviour
         Vector2 Pdirection = ((Vector2)path.vectorPath[currentwaypoint]- rb.position).normalized;
         Vector2 force = Pdirection * speed* Time.deltaTime;
 
-        rb.AddForce(force);
+        rb.AddForce(force,ForceMode2D.Force);
+
         float distance = Vector2.Distance(rb.position, path.vectorPath[currentwaypoint]);
+        //Debug.Log("distacia entre el nodo mas cercano y yo  " + distance);
         if (distance < nextWaypointDistance)
         {
             currentwaypoint++; 
         }
+        //Debug.Log("el currentwaypoint es: "+currentwaypoint);
+        //Debug.Log("el path vector count es de: " + path.vectorPath.Count);
     }
 
     public void savepet(){   
         if (!servertime)
         updateDevice();
+    }
+
+    public int cantidadCacas()
+    {
+        TimeSpan df = getTimeSpan(PlayerPrefs.GetString("DateOfFeed"));
+        int cacas = (int)(df.TotalHours / 6); 
+        return cacas;
+    }
+    public void LlamadoDeFruta(int newhunger)
+    {
+        updatehunger(newhunger);
+        path.vectorPath.Clear();
+        path = null;
+        seeker = null;
+        distanceWall();
     }
 }

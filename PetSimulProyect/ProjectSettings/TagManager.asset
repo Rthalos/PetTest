@@ -9,6 +9,7 @@ TagManager:
   - UI
   - background
   - food
+  - Shit
   layers:
   - Default
   - TransparentFX

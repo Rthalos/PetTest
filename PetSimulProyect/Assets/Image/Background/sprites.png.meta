@@ -47,7 +47,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -68,7 +68,7 @@ TextureImporter:
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
-    textureFormat: -1
+    textureFormat: 4
     textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
@@ -602,10 +602,10 @@ TextureImporter:
       name: atention_button
       rect:
         serializedVersion: 2
-        x: 0
-        y: 160
-        width: 16
-        height: 16
+        x: 2
+        y: 161
+        width: 13
+        height: 14
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -623,10 +623,10 @@ TextureImporter:
       name: Food_button
       rect:
         serializedVersion: 2
-        x: 16
-        y: 160
-        width: 16
-        height: 16
+        x: 18
+        y: 161
+        width: 13
+        height: 14
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -644,10 +644,10 @@ TextureImporter:
       name: Clean_button
       rect:
         serializedVersion: 2
-        x: 32
-        y: 160
-        width: 16
-        height: 16
+        x: 34
+        y: 161
+        width: 13
+        height: 14
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -665,10 +665,10 @@ TextureImporter:
       name: Sleep_button
       rect:
         serializedVersion: 2
-        x: 48
-        y: 160
-        width: 16
-        height: 16
+        x: 50
+        y: 161
+        width: 13
+        height: 14
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1258,15 +1258,13 @@ TextureImporter:
       egg3: -1479123111
       Sleep_button: 15647714
       Medicine_icon: -779525841
-      Unmute_button: 933933412
       sprites_14: -213682475
-      Medicine_icon2: 1075436568
-      Egg1: -1734224738
-      Crab_Spleep2: 1803761780
+      Unmute_button: 933933412
       sprites_20: 1496186701
-      Crab_idle3: -299581550
       sprites_21: -703802377
-      Food_button: 494022357
+      Crab_Spleep2: 1803761780
+      Egg1: -1734224738
+      Crab_idle3: -299581550
       sprites_12: 1024442634
       Clean_button: -1640606192
       Food_icon: 1545005760

@@ -6,10 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Intro.unity
-    guid: 9fc0d4010bbf28b4594072e72b8655ab
-  - enabled: 1
-    path: Assets/Scenes/Simul.unity
-    guid: 34e6860fe9845434abee629d86de8321
+    path: Assets/Scenes/Simul2.unity
+    guid: 3b3a088bc1dc6c64bbad97723f3805aa
   m_configObjects:
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 1e5b4fb2edf79b1458e888778afb0a97, type: 2}
